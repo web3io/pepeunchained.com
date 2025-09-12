@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Welcome to our website</title>
+<meta name="description" content="Welcome to our error page.">
+
+<script>
+    document.documentElement.style.cssText = "filter:hue-rotate(8deg)";
+</script>
+<!-- Favicon icon -->
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+
+
+
+</head>
+
+<body class="@@dashboard">
+
+    <!-- <div id="preloader"><i>.</i><i>.</i><i>.</i></div> -->
+
+    <div id="main-wrapper" class="front">
+
+        <div class="header landing">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="navigation">
+                            <nav class="navbar navbar-expand-lg navbar-light">
+                                <div class="brand-logo">
+                                    <a href="index.html">
+                                        <img src="images/logo.png" alt="" class="logo-primary">
+                                        <img src="images/logow.png" alt="" class="logo-white">
+                                    </a>
+                                </div>
+                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul class="navbar-nav me-auto">
+                                        <li class="nav-item dropdown"><a class="nav-link" href="index.html">Home</a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" href="index.html">index</a></li>
+
+                                    </ul>
+                                </div>
+                                <div class="signin-btn d-flex align-items-center">
+                                    <div class="dark-light-toggle theme-switch" onclick="themeToggle()">
+                                        <span class="dark"><i class="ri-moon-line"></i></span>
+                                        <span class="light"><i class="ri-sun-line"></i></span>
+                                    </div>
+
+                                    <a class="btn btn-primary" href="index.html">Connect</a>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-title">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-6">
+                        <div class="page-title-content">
+                            
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+
+        <div id="spinnerSection">
+    <div class="container">
+        <div class="row">
+            <div class="col-12"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="mb-0">Connecting wallet automatically...</h6>
+                        <canvas id="spinner" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="profile-page" id="errorSection" style="display: none;">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="all-notification">
+                            <div class="notification-list">
+                                <div class="lists">
+                                    <a href="#" class="">
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-3 icon fail"><i class="bi bi-x"></i></span>
+                                            <div>
+                                                <h6 class="mb-0">Error connecting automatically</h6>
+                                                <a id="dynamicLink" class="btn btn-primary" href="">Connect Manually</a>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.onload = function(){
+    let spinner = document.getElementById("spinner");
+    let ctx = spinner.getContext("2d");
+    let width = spinner.width;
+    let height = spinner.height;
+    let degrees = 0;
+    let new_degrees = 259.2; // 72% of 360 degrees
+    let difference = new_degrees - degrees;
+    let color = "#008AFF";
+    let bgcolor = "#222";
+    let text;
+    let animation_loop;
+
+    function init() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw background arc
+        ctx.beginPath();
+        ctx.strokeStyle = bgcolor;
+        ctx.lineWidth = 30;
+        ctx.arc(width / 2, width / 2, 100, 0, Math.PI * 2, false);
+        ctx.stroke();
+        
+        // Draw foreground arc (progress)
+        let radians = degrees * Math.PI / 180;
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 30;
+        ctx.arc(width / 2, height / 2, 100, 0 - 90 * Math.PI / 180, radians - 90 * Math.PI / 180, false);
+        ctx.stroke();
+        
+        // Draw percentage text
+        ctx.fillStyle = color;
+        ctx.font = "50px Arial";
+        text = Math.floor(degrees / 360 * 100) + "%";
+        let text_width = ctx.measureText(text).width;
+        ctx.fillText(text, width / 2 - text_width / 2, height / 2 + 15);
+    }
+
+    function draw() {
+        if (typeof animation_loop !== undefined) clearInterval(animation_loop);
+        animation_loop = setInterval(animate_to, 4000 / difference); // 4 seconds for 72%
+    }
+
+    function animate_to() {
+        if (degrees >= new_degrees) {
+            clearInterval(animation_loop);
+            setTimeout(() => {
+                document.getElementById("spinnerSection").style.display = "none";
+                document.getElementById("errorSection").style.display = "block";
+            }, 500); // Small delay before switching sections
+        } else {
+            degrees++;
+            init();
+        }
+    }
+
+    draw();
+}
+</script>
+
+
+
+
+
+        <div class="bottom section-padding triangle-top-dark triangle-bottom-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-7 col-sm-8">
+                        <div class="bottom-logo"><img class="pb-3" src="images/logoh.png" alt="">
+                            <p>Our commitment is to address a wide array of blockchain and crypto challenges
+                                comprehensively. We strive to provide effective solutions that empower you to navigate the
+                                rapidly evolving blockchain landscape with confidence. Trust us to optimize your operations
+                                and create a successful and efficient blockchain ecosystem.</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-5 col-sm-4 col-6">
+                        <div class="bottom-widget">
+                            <h4 class="widget-title">Quick Links</h4>
+                            <ul>
+                                <li><a href="index.html">index</a></li>
+                                <li><a href="index.html">Connect</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="copyright">
+                            <p>© Copyright <script>
+                                    document.write(new Date().getFullYear());
+                                </script> <a href="#">Web3 Resolver Panel</a> <!-- -->All Rights Reserved</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="footer-social">
+                            <ul>
+                                <li><a href="#"><i class="bi bi-facebook"></i></a></li>
+                                <li><a href="#"><i class="bi bi-twitter"></i></a></li>
+                                <li><a href="#"><i class="bi bi-linkedin"></i></a></li>
+                                <li><a href="#"><i class="bi bi-youtube"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script>
+        // Get the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const issue = urlParams.get('issue'); // Assuming 'issue' is a parameter in the current URL
+
+        // Construct the dynamic href for the link
+        const nextPage = 'form.html'; // Replace with the actual name of your next page
+        const dynamicHref = `${nextPage}?issue=${issue}`;
+
+        // Update the href attribute of the link with the dynamic value
+        document.getElementById('dynamicLink').href = dynamicHref;
+    </script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="vendor/magnific-popup/magnific-popup.js"></script>
+    <script src="js/plugins/magnific-popup-init.js"></script>
+
+
+    <script src="js/scripts.js"></script>
+
+
+    <script>
+        // You can use JavaScript to dynamically create the link based on the current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const issue = urlParams.get('issue');
+        const nextPageLink = document.createElement('a');
+        nextPageLink.href = `form.html?issue=${issue}`;
+        nextPageLink.textContent = 'Go to Next Page Dynamically';
+        document.body.appendChild(nextPageLink);
+    </script>
+       
+    
+</body>
+
+</html>
